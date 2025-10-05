@@ -38,8 +38,7 @@ BMG/
 ├── Infra.Data/                   # Camada de Infraestrutura
 │   ├── Context/
 │   ├── Adapters/
-│   └── migrations/
-├── migrations/                   # Scripts de banco (raiz)
+│   └── migrations/               # Scripts de banco (raiz)
 ├── Seguros.Tests/                # Testes
 │   ├── Unit/
 │   │   ├── Application/
@@ -47,8 +46,6 @@ BMG/
 │   │   └── Domain/
 │   │       └── Entities/
 │   ├── Integration/
-│   └── TestResults/
-├── migrations/                   # Scripts de banco
 ├── docker-compose.yml            # Docker Compose
 ├── Dockerfile                    # Container da aplicação
 ├── HexagonalArch.sln            # Solution file
@@ -166,10 +163,6 @@ O sistema trabalha com **4 status** para propostas, com transições controladas
   "Evento": "MudancaStatus"
 }
 ```
-
-### Observações
-- Não há consumidores automáticos na API; as mensagens permanecem na fila para visibilidade no RabbitMQ Management.
-
 ## 🚀 Como Executar
 
 ### **Pré-requisitos**
@@ -203,31 +196,6 @@ http://localhost:5000/swagger
 
 ## 🔧 Configuração
 
-### **Docker Compose**
-```yaml
-version: '3.8'
-services:
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: seguros-rabbitmq
-    ports:
-      - "5672:5672"   # AMQP port
-      - "15672:15672" # Management UI
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
-      RABBITMQ_DEFAULT_VHOST: /
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-    networks:
-      - seguros-network
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-```
-
 ## 📡 Endpoints da API
 
 ### **Propostas**
@@ -246,87 +214,7 @@ services:
 - **Unit Tests**: Testes unitários para entidades e serviços
 - **Integration Tests**: Testes de integração com banco e RabbitMQ
 
-### **Executar Testes**
-```bash
-# Todos os testes
-dotnet test
-
-# Testes unitários
-dotnet test --filter "Category=Unit"
-
-# Testes de integração
-dotnet test --filter "Category=Integration"
 ```
-
-### **Cobertura de Testes**
-```bash
-# Gerar relatório de cobertura
-dotnet test --collect:"XPlat Code Coverage"
-```
-
-## 🔄 Fluxo de Dados
-
-### **Criação de Proposta**
-1. **POST** `/api/propostas` → Cria proposta com status "EmAnalise"
-2. **Validação** → Nome do cliente (min. 3 caracteres) e valor > 0
-3. **RabbitMQ** → Publica evento `proposta.criada`
-4. **Banco** → Persiste proposta no SQL Server
-
-### **Alteração de Status**
-1. **PUT** `/api/propostas/{id}/status` → Altera status (Aprovada/Rejeitada)
-2. **Validação** → Verifica se proposta existe e pode ser alterada
-3. **RabbitMQ** → Publica evento `proposta.status.alterado`
-4. **Banco** → Atualiza status e data de atualização
-
-### **Contratação**
-1. **POST** `/api/contratacoes` → Contrata proposta (apenas se aprovada)
-2. **Validação** → Verifica se proposta existe e está aprovada
-3. **PropostaService** → Atualiza status para "Contratada"
-4. **Geração** → Cria número de contrato único (CTR + data + GUID)
-5. **RabbitMQ** → Publica evento `contratacao.realizada`
-6. **Banco** → Persiste contratação e atualiza proposta
-
-### **Verificação de Status**
-1. **GET** `/api/contratacoes/verificar-status/{propostaId}` → Verifica se proposta existe
-2. **PropostaService** → Consulta status da proposta
-3. **Resposta** → Retorna se proposta existe e está disponível
-
-## 🐳 Docker
-
-### **Executar com Docker**
-```bash
-# Apenas RabbitMQ
-docker-compose up -d
-
-# Ou executar a aplicação localmente
-dotnet run --project API
-```
-
-### **Acessar RabbitMQ Management**
-- **URL**: http://localhost:15672
-- **Usuário**: guest
-- **Senha**: guest
-
-### **Testar Eventos RabbitMQ**
-```bash
-# 1. Criar uma proposta (publica evento EmAnalise)
-POST /api/propostas
-{
-  "clienteNome": "João Silva",
-  "valorCobertura": 50000
-}
-
-# 2. Aprovar proposta (publica evento Aprovada)
-PUT /api/propostas/{id}/status
-{
-  "status": "Aprovada"
-}
-
-# 3. Contratar proposta (publica evento Contratada)
-POST /api/contratacoes
-{
-  "propostaId": "guid-da-proposta"
-}
 ```
 
 ## 📊 Monitoramento
