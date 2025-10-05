@@ -17,7 +17,6 @@ Sistema BMG focado em **Propostas de Seguro** e **Contratações**, com comunica
 #### **ContratacaoService**
 - ✅ **Contratar uma proposta** - Somente se aprovada, com geração de número de contrato
 - ✅ **Verificar status da proposta** - Consulta se proposta existe e está disponível
-- ✅ **Comunicação com PropostaService** - Integração para validação de status
 
 ## 🏛️ Arquitetura
 
