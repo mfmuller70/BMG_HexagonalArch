@@ -146,76 +146,11 @@ O sistema trabalha com **4 status** para propostas, com transições controladas
 - **Virtual Host**: /
 
 ### **Fila**
-
 - Fila única: `status.queue` (durável)
 - Publicação via exchange padrão (amq.default) usando routingKey = `status.queue`
 
 ### **Mensagens Publicadas**
 - Evento de mudança de status contendo: PropostaId, StatusAnterior, NovoStatus, Timestamp, Evento
-
-### **Estrutura das Mensagens**
-```json
-{
-  "PropostaId": "guid",
-  "StatusAnterior": "EmAnalise",
-  "NovoStatus": "Aprovada", 
-  "Timestamp": "2025-01-03T10:30:00Z",
-  "Evento": "MudancaStatus"
-}
-```
-## 🚀 Como Executar
-
-### **Pré-requisitos**
-- .NET 8 SDK
-- SQL Server (Local ou Docker)
-- Docker Desktop (para RabbitMQ)
-
-### **1. Executar Migrations**
-```bash
-# Na pasta do projeto
-dotnet ef database update --project Infra.Data --startup-project API
-```
-
-### **2. Executar RabbitMQ (Docker)**
-```bash
-# Iniciar RabbitMQ
-docker-compose up -d
-
-# Verificar se está rodando
-docker ps
-```
-
-### **3. Executar a Aplicação**
-```bash
-# Executar API
-dotnet run --project API
-
-# Acessar Swagger
-http://localhost:5000/swagger
-```
-
-## 🔧 Configuração
-
-## 📡 Endpoints da API
-
-### **Propostas**
-- `GET /api/propostas` - Listar todas as propostas
-- `POST /api/propostas` - Criar nova proposta
-- `GET /api/propostas/{id}` - Obter proposta por ID
-- `PUT /api/propostas/{id}/status` - Alterar status da proposta
-
-### **Contratações**
-- `POST /api/contratacoes` - Contratar proposta (apenas se aprovada)
-- `GET /api/contratacoes/verificar-status/{propostaId}` - Verificar se proposta existe
-
-## 🧪 Testes
-
-### **Estrutura de Testes**
-- **Unit Tests**: Testes unitários para entidades e serviços
-- **Integration Tests**: Testes de integração com banco e RabbitMQ
-
-```
-```
 
 ## 📊 Monitoramento
 
@@ -279,11 +214,3 @@ http://localhost:5000/swagger
 Para informações detalhadas sobre os requisitos funcionais e não funcionais desta solução, consulte:
 
 **📋 [Requisitos BMG_INDT - Arquitetura Hexagonal.pdf](./Requisitos%20BMG_INDT%20-%20Arquitetura%20Hexagonal.pdf)**
-
-Este documento contém todas as especificações técnicas, regras de negócio e critérios de aceitação utilizados na construção desta solução.
-
-> **Nota:** O arquivo PDF está atualmente nos Solution Items do Visual Studio, mas precisa ser copiado para a raiz do repositório para que o link funcione no GitHub.
-
-
-## 📄 Copyright
-© 2025 **Marcos Muller**. Todos os direitos reservados.
