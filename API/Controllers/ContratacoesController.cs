@@ -43,7 +43,7 @@ public class ContratacoesController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro interno ao contratar proposta {PropostaId}: {Message}", dto.PropostaId, ex.Message);
-            return StatusCode(500, "Erro interno do servidor");
+            return BadRequest(ex.Message);
         }
     }
 
