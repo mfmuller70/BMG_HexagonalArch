@@ -7,11 +7,13 @@ namespace Application.Services;
 public class PropostaServiceManager : IPropostaService
 {
     private readonly IPropostaRepository _propostaRepository;
+    private readonly IContratacaoRepository _contratacaoRepository;
     private readonly StatusEventService _statusEventService;
 
-    public PropostaServiceManager(IPropostaRepository propostaRepository, StatusEventService statusEventService)
+    public PropostaServiceManager(IPropostaRepository propostaRepository, IContratacaoRepository contratacaoRepository, StatusEventService statusEventService)
     {
         _propostaRepository = propostaRepository;
+        _contratacaoRepository = contratacaoRepository;
         _statusEventService = statusEventService;
     }
 
@@ -39,6 +41,13 @@ public class PropostaServiceManager : IPropostaService
         if (proposta == null)
         {
             throw new Exception($"Proposta com ID {id} não encontrada");
+        }
+
+        // Verificar se a proposta já foi contratada
+        var contratacaoExistente = await _contratacaoRepository.GetByPropostaIdAsync(id);
+        if (contratacaoExistente != null)
+        {
+            throw new Exception("Não é possível alterar o status de uma proposta já contratada");
         }
 
         proposta.DefinirStatus(novoStatus);

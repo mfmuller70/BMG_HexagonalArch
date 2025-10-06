@@ -11,7 +11,19 @@ public static class ContratacaoMapper
         {
             PropostaId = contratacao.PropostaId,
             DataContratacao = contratacao.DataContratacao,
-            NumeroContrato = contratacao.NumeroContrato
+            NumeroContrato = contratacao.NumeroContrato,
+            JaExistia = false
+        };
+    }
+    
+    public static ContratacaoDto ToDto(this Contratacao contratacao, bool jaExistia)
+    {
+        return new ContratacaoDto
+        {
+            PropostaId = contratacao.PropostaId,
+            DataContratacao = contratacao.DataContratacao,
+            NumeroContrato = contratacao.NumeroContrato,
+            JaExistia = jaExistia
         };
     }
 }

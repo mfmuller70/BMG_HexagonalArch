@@ -33,7 +33,8 @@ public class PropostaIntegrationTests : IDisposable
         _statusEventService = new StatusEventService(_messageServiceMock.Object, _loggerMock.Object);
 
         var propostaRepository = new PropostaRepository(_context);
-        _service = new PropostaServiceManager(propostaRepository, _statusEventService);
+        var contratacaoRepository = new ContratacaoRepository(_context);
+        _service = new PropostaServiceManager(propostaRepository, contratacaoRepository, _statusEventService);
     }
 
     [Fact]

@@ -97,17 +97,16 @@ public class ContratacaoServiceManagerTests
             .ReturnsAsync((Contratacao?)null);
         _contratacaoRepositoryMock.Setup(x => x.InsertAsync(It.IsAny<Contratacao>()))
             .ReturnsAsync(contratacao);
-        _propostaServiceMock.Setup(x => x.AtualizarStatusPropostaAsync(propostaId, StatusProposta.Contratada))
-            .ReturnsAsync(proposta);
 
         var result = await _service.ContratarPropostaAsync(propostaId);
 
         result.Should().NotBeNull();
-        result.PropostaId.Should().Be(propostaId);
+        result.contratacao.Should().NotBeNull();
+        result.contratacao.PropostaId.Should().Be(propostaId);
+        result.jaExistia.Should().BeFalse();
         _propostaServiceMock.Verify(x => x.GetPropostaByIdAsync(propostaId), Times.Once);
         _contratacaoRepositoryMock.Verify(x => x.GetByPropostaIdAsync(propostaId), Times.Once);
         _contratacaoRepositoryMock.Verify(x => x.InsertAsync(It.IsAny<Contratacao>()), Times.Once);
-        _propostaServiceMock.Verify(x => x.AtualizarStatusPropostaAsync(propostaId, StatusProposta.Contratada), Times.Once);
     }
 
     [Fact]
@@ -127,7 +126,8 @@ public class ContratacaoServiceManagerTests
         var result = await _service.ContratarPropostaAsync(propostaId);
 
         result.Should().NotBeNull();
-        result.Should().BeSameAs(contratacaoExistente);
+        result.contratacao.Should().BeSameAs(contratacaoExistente);
+        result.jaExistia.Should().BeTrue();
         _propostaServiceMock.Verify(x => x.GetPropostaByIdAsync(propostaId), Times.Once);
         _contratacaoRepositoryMock.Verify(x => x.GetByPropostaIdAsync(propostaId), Times.Once);
         _contratacaoRepositoryMock.Verify(x => x.InsertAsync(It.IsAny<Contratacao>()), Times.Never);

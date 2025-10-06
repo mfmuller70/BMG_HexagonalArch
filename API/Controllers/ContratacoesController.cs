@@ -37,10 +37,14 @@ public class ContratacoesController : ControllerBase
                 return BadRequest(ModelState);
             }
 
-            var contratacao = await _contratacaoService.ContratarPropostaAsync(dto.PropostaId);
+            var resultado = await _contratacaoService.ContratarPropostaAsync(dto.PropostaId);
+            var contratacao = resultado.contratacao;
+            var jaExistia = resultado.jaExistia;
+            var mensagem = jaExistia ? "Proposta já contratada" : "Proposta contratada com sucesso";
+            
             return Ok(new { 
-                contratacao = contratacao.ToDto(),
-                mensagem = "Proposta já contratada"
+                contratacao = contratacao.ToDto(jaExistia),
+                mensagem = mensagem
             });
         }
         catch (Exception ex)

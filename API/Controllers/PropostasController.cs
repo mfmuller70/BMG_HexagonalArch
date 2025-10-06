@@ -154,7 +154,7 @@ public class PropostasController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro interno ao atualizar status da proposta {PropostaId}: {Message}", id, ex.Message);
-            return StatusCode(500, "Erro interno do servidor");
+            return BadRequest(ex.Message);
         }
     }
 }

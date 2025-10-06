@@ -20,7 +20,7 @@ public class ContratacaoServiceManager : IContratacaoService
         _statusEventService = statusEventService;
     }
 
-    public async Task<Contratacao> ContratarPropostaAsync(Guid propostaId)
+    public async Task<(Contratacao contratacao, bool jaExistia)> ContratarPropostaAsync(Guid propostaId)
     {
         var proposta = await _propostaService.GetPropostaByIdAsync(propostaId);
         if (proposta == null)
@@ -36,7 +36,7 @@ public class ContratacaoServiceManager : IContratacaoService
         var contratacaoExistente = await _contratacaoRepository.GetByPropostaIdAsync(propostaId);
         if (contratacaoExistente != null)
         {
-            return contratacaoExistente;
+            return (contratacaoExistente, true);
         }
 
         var contratacao = new Contratacao(propostaId);
@@ -44,7 +44,7 @@ public class ContratacaoServiceManager : IContratacaoService
 
         await _statusEventService.PublicarMudancaStatusAsync(propostaId, StatusProposta.Aprovada, StatusProposta.Contratada);
 
-        return contratacaoCriada;
+        return (contratacaoCriada, false);
     }
 
     public async Task<Proposta?> VerificarStatusPropostaAsync(Guid propostaId)

@@ -4,6 +4,6 @@ namespace Domain.Ports;
 
 public interface IContratacaoService
 {
-    Task<Contratacao> ContratarPropostaAsync(Guid propostaId);
+    Task<(Contratacao contratacao, bool jaExistia)> ContratarPropostaAsync(Guid propostaId);
     Task<Proposta?> VerificarStatusPropostaAsync(Guid propostaId);
 }
