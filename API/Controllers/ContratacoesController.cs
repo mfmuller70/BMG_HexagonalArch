@@ -38,7 +38,10 @@ public class ContratacoesController : ControllerBase
             }
 
             var contratacao = await _contratacaoService.ContratarPropostaAsync(dto.PropostaId);
-            return Ok(contratacao.ToDto());
+            return Ok(new { 
+                contratacao = contratacao.ToDto(),
+                mensagem = "Proposta já contratada"
+            });
         }
         catch (Exception ex)
         {
