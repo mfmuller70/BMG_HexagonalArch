@@ -1,5 +1,6 @@
 using Application.DTOs;
 using Application.Mappers;
+using Domain.Entities;
 using Domain.Ports;
 using Microsoft.AspNetCore.Mvc;
 

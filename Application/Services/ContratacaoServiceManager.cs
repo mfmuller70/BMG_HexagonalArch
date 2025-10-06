@@ -42,8 +42,6 @@ public class ContratacaoServiceManager : IContratacaoService
         var contratacao = new Contratacao(propostaId);
         var contratacaoCriada = await _contratacaoRepository.InsertAsync(contratacao);
 
-        await _propostaService.AtualizarStatusPropostaAsync(propostaId, StatusProposta.Contratada);
-
         await _statusEventService.PublicarMudancaStatusAsync(propostaId, StatusProposta.Aprovada, StatusProposta.Contratada);
 
         return contratacaoCriada;

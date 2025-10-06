@@ -84,17 +84,17 @@ public class ContratacoesController : ControllerBase
                 return NotFound("Proposta não encontrada");
             }
 
-            // Se a proposta estiver aprovada, contratar ela
-            if (proposta.Status == StatusProposta.Aprovada)
-            {
-                var contratacao = await _contratacaoService.ContratarPropostaAsync(propostaId);
-                return Ok(new
-                {
-                    Mensagem = "OK",
-                    Status = "Contratada",
-                    ContratacaoId = contratacao.PropostaId
-                });
-            }
+            //// Se a proposta estiver aprovada, contratar ela
+            //if (proposta.Status == StatusProposta.Aprovada)
+            //{
+            //    var contratacao = await _contratacaoService.ContratarPropostaAsync(propostaId);
+            //    return Ok(new
+            //    {
+            //        Mensagem = "OK",
+            //        Status = "Contratada",
+            //        ContratacaoId = contratacao.PropostaId
+            //    });
+            //}
 
             return Ok(new
             {
